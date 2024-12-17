@@ -41,7 +41,7 @@ export default function UpdateStation() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleUpdateStation = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setError("");
@@ -54,7 +54,7 @@ export default function UpdateStation() {
 
     try {
       const response = await fetch(`http://localhost:4000/api/stations/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(station),
       });
@@ -103,7 +103,7 @@ export default function UpdateStation() {
         <p className="text-green-500 text-center mb-4">{successMessage}</p>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpdateStation}>
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">
             Station Name
