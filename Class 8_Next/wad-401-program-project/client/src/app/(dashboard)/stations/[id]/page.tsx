@@ -1,14 +1,45 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { StationType } from "@/types/types";
 
 export default function UpdateStation() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState(""); // Add description state
+  const [station, setStation] = useState<StationType>({
+    name: "",
+    description: "",
+  } as StationType);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
   const router = useRouter();
+  const { id } = useParams();
+
+  const fetchStation = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/stations/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch station details");
+
+      const data = await response.json();
+      setStation(data);
+    } catch (err) {
+      console.error("Error fetching station:", err);
+      setError("Failed to load station data");
+    }
+  };
+
+  useEffect(() => {
+    if (id) fetchStation();
+  }, [id]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setStation((prevStation) => ({
+      ...prevStation,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,37 +47,50 @@ export default function UpdateStation() {
     setError("");
     setSuccessMessage("");
 
-    if (!name) {
+    if (!station.name) {
       setError("Station name is required");
       return;
     }
 
-    console.log("update station");
+    try {
+      const response = await fetch(`http://localhost:4000/api/stations/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(station),
+      });
 
-    // try {
-    //   const response = await fetch("http://localhost:4000/api/stations", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ name, description }), // Send description in body
-    //   });
+      if (response.ok) {
+        setSuccessMessage("Station updated successfully!");
+        setTimeout(() => {
+          router.push("/stations");
+        }, 2000);
+      } else {
+        throw new Error("Failed to update station");
+      }
+    } catch (err) {
+      console.error("Error updating station:", err);
+      setError("Internal Server Error. Please try again later.");
+    }
+  };
 
-    //   if (response.ok) {
-    //     setSuccessMessage("Station created successfully!");
-    //     setName("");
-    //     setDescription(""); // Clear description field
-    //     setTimeout(() => {
-    //       router.push("/stations");
-    //     }, 3000);
-    //   } else {
-    //     const errorResult = await response.json();
-    //     setError(errorResult.error || "Failed to create station");
-    //   }
-    // } catch (err) {
-    //   console.error("Error creating station:", err);
-    //   setError("Internal Server Error. Please try again later.");
-    // }
+  const handleDeleteStation = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/stations/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setSuccessMessage("Station deleted successfully!");
+        setTimeout(() => {
+          router.push("/stations");
+        }, 2000);
+      } else {
+        throw new Error("Failed to delete station");
+      }
+    } catch (err) {
+      console.error("Error deleting station:", err);
+      setError("Failed to delete station. Please try again.");
+    }
   };
 
   return (
@@ -66,9 +110,10 @@ export default function UpdateStation() {
           </label>
           <input
             type="text"
+            name="name"
             placeholder="Enter station name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={station.name}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -78,9 +123,10 @@ export default function UpdateStation() {
             Description
           </label>
           <textarea
+            name="description"
             placeholder="Enter station description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={station.description}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500"
           ></textarea>
         </div>
@@ -88,14 +134,14 @@ export default function UpdateStation() {
         <div className="flex gap-4">
           <button
             type="submit"
-            className="px-7 py-2 bg-black text-white rounded hover:bg-gray-800"
+            className="px-7 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
           >
             Update Station
           </button>
           <button
             type="button"
-            className="px-7 py-2 bg-black text-white rounded hover:bg-gray-800"
-            onClick={() => handleDeleteStation}
+            className="px-7 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"
+            onClick={handleDeleteStation}
           >
             Delete Station
           </button>
