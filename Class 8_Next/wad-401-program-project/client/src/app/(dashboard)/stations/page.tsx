@@ -3,29 +3,37 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { StationType } from "@/types/types";
+
 export default function Stations() {
   const router = useRouter();
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchStations = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/stations");
+      if (!response.ok) {
+        throw new Error("Failed to fetch stations");
+      }
+      const data = await response.json();
+
+      console.log("Data", data);
+      setStations(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStationClick = (id: number) => {
+    router.push(`/stations/${id}`);
+  };
+
   // Fetch stations from backend
   useEffect(() => {
-    const fetchStations = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/stations");
-        if (!response.ok) {
-          throw new Error("Failed to fetch stations");
-        }
-        const data = await response.json();
-        setStations(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStations();
   }, []);
 
@@ -35,7 +43,7 @@ export default function Stations() {
 
   return (
     <div className="max-w-7xl mx-auto p-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-10">
         <h1 className="text-4xl font-bold">Stations</h1>
         <button
           onClick={handleCreateNew}
@@ -48,31 +56,30 @@ export default function Stations() {
       {error && <p className="text-red-500">Error: {error}</p>}
 
       {!loading && !error && (
-        <table className="w-full border-separate border-spacing-y-4">
-          <thead>
-            <tr className="text-gray-500 text-sm font-medium">
-              <th className="text-left px-4 py-2">Station Name</th>
-              <th className="text-left px-4 py-2">Description</th>
-              <th className="text-left px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stations.map((station: any) => (
-              <tr key={station.id} className="bg-white shadow rounded-lg">
-                <td className="px-4 py-3 font-bold">{station.name}</td>
-                <td className="px-4 py-3">{station.description}</td>
-                <td className="px-4 py-3 flex gap-4">
-                  <button className="text-blue-500 hover:text-blue-700 font-medium">
-                    Edit
-                  </button>
-                  <button className="text-red-500 hover:text-red-700 font-medium">
-                    Delete
-                  </button>
-                </td>
-              </tr>
+        <div className="w-full">
+          <div className="w-full flex mb-4">
+            <p className="w-full text-lg">Station Name</p>
+            <p className="w-full text-lg">Description</p>
+          </div>
+          <div className="flex flex-col gap-4">
+            {stations.map((station: StationType) => (
+              <button
+                key={station.id}
+                onClick={() => handleStationClick(station.id)}
+                className="w-full transition duration-200"
+              >
+                <div className="bg-white shadow rounded-lg flex py-4 hover:bg-gray-100 hover:shadow-md">
+                  <p className="w-full text-left px-4">{station.name}</p>
+                  <p className="w-full text-left">
+                    {station.description === ""
+                      ? "No description provided"
+                      : station.description}
+                  </p>
+                </div>
+              </button>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       )}
     </div>
   );
