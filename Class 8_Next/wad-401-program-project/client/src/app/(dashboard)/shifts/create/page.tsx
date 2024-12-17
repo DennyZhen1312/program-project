@@ -56,7 +56,7 @@ export default function CreateShift() {
   };
 
   return (
-    <div className="mx-auto mt-6 py-6 px-8">
+    <div className="max-w-7xl mx-auto mt-6 py-6 px-8">
       <h1 className="text-3xl font-bold mb-6">Create New Shift</h1>
       <p className="text-gray-500 mb-8">Enter the details for the new shift.</p>
 
