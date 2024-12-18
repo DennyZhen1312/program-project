@@ -81,7 +81,7 @@ export default function CreateShift() {
           />
         </div>
 
-        <div className="flex gap-6 min-w-full mb-6">
+        <div className="flex gap-6 w-full mb-6">
           {/* Start Time */}
           <div className="w-full">
             <label className="block text-gray-700 font-medium mb-2">

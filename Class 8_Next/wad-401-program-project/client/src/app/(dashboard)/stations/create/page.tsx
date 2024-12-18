@@ -36,7 +36,7 @@ export default function CreateStation() {
         setDescription(""); // Clear description field
         setTimeout(() => {
           router.push("/stations");
-        }, 3000);
+        }, 2000);
       } else {
         const errorResult = await response.json();
         setError(errorResult.error || "Failed to create station");
