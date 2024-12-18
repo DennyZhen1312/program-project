@@ -1,9 +1,6 @@
 import { WithAuthProp } from "@clerk/clerk-sdk-node";
-import { Response, Request, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
+import { NextFunction, Request, Response } from "express";
 import { clerkClient } from "../server";
-
-const prisma = new PrismaClient();
 
 export const validateUser = async (
   req: WithAuthProp<Request>,

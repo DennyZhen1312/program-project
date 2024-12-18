@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma/client";
 
 // Controller to create a new shift
 export const createShift = async (req: Request, res: Response) => {
@@ -19,8 +17,8 @@ export const createShift = async (req: Request, res: Response) => {
       data: {
         name,
         startTime,
-        endTime,
-      },
+        endTime
+      }
     });
 
     res.status(201).json(newShift);
