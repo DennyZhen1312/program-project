@@ -5,31 +5,31 @@ async function main() {
     {
       name: "Alice Johnson",
       email: "alice.johnson@example.com",
-      isAvailabilityRequested: false,
+      isAvailabilityRequested: false
     },
     {
       name: "Bob Smith",
       email: "bob.smith@example.com",
-      isAvailabilityRequested: false,
+      isAvailabilityRequested: false
     },
     {
       name: "Charlie Brown",
       email: "charlie.brown@example.com",
-      isAvailabilityRequested: false,
+      isAvailabilityRequested: false
     },
     {
       name: "Diana Prince",
       email: "diana.prince@example.com",
-      isAvailabilityRequested: false,
+      isAvailabilityRequested: false
     },
     {
       name: "Ethan Hunt",
       email: "ethan.hunt@example.com",
-      isAvailabilityRequested: false,
-    },
+      isAvailabilityRequested: false
+    }
   ];
-  await prisma.user.createMany({
-    data: users,
+  await prisma.employee.createMany({
+    data: users
   });
   console.log("Seed data created successfully!");
 }
