@@ -1,11 +1,14 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CreateStation() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState(""); // Add description state
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +34,9 @@ export default function CreateStation() {
         setSuccessMessage("Station created successfully!");
         setName("");
         setDescription(""); // Clear description field
+        setTimeout(() => {
+          router.push("/stations");
+        }, 2000);
       } else {
         const errorResult = await response.json();
         setError(errorResult.error || "Failed to create station");
@@ -42,9 +48,9 @@ export default function CreateStation() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-3xl font-bold text-center mb-6">Create New Station</h1>
-      <p className="text-gray-500 text-center mb-8">Enter the station details.</p>
+    <div className="max-w-7xl mx-auto mt-6 py-6 px-8">
+      <h1 className="text-3xl font-bold mb-6">Create New Station</h1>
+      <p className="text-gray-500 mb-8">Enter the station details.</p>
 
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {successMessage && (
@@ -79,7 +85,7 @@ export default function CreateStation() {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
+          className="px-7 py-2 bg-black text-white rounded hover:bg-gray-800"
         >
           Create Station
         </button>
