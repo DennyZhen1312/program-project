@@ -35,5 +35,24 @@ model User {
   isAvailabilityRequested Boolean  @default(false) @map("is_availability_requested")
   createdAt               DateTime @default(now()) @map("created_at")
 
+  availabilities Availability[]
+
   @@map("users")
+}
+
+model Availability {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  monday    String?
+  tuesday   String?
+  wednesday String?
+  thursday  String?
+  friday    String?
+  saturday  String?
+  sunday    String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id]) 
+
+  @@map("availabilities")
 }

@@ -22,3 +22,26 @@ export const requestAvailabilities = async (req: Request, res: Response) => {
       .json({ error: "Failed to update availability request status" });
   }
 };
+
+export const isRequested = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+    }
+    const isRequested = user!.isAvailabilityRequested;
+
+    res.status(200).json(isRequested);
+  } catch (error) {
+    console.error("Error checking availability request status:", error);
+    res.status(500).json({
+      error: "Failed to check availability request status",
+    });
+  }
+};
+
+export const postUserAvailability = () => {};
