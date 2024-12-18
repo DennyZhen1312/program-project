@@ -22,5 +22,13 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "prisma": "^6.0.1"
+<<<<<<< HEAD
   }
 }
+=======
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
+}
+>>>>>>> 0b152e666134fc40d7b2c9385401ca5f0630d73f
