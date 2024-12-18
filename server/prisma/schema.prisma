@@ -29,11 +29,28 @@ model Station {
 }
 
 model Employee {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id                      Int      @id @default(autoincrement())
+  name                    String
+  email                   String   @unique
+  createdAt               DateTime @default(now())
   isAvailabilityRequested Boolean  @default(false) @map("is_availability_requested")
 
-  
+  availabilities Availability[]
+}
+
+model Availability {
+  id         Int      @id @default(autoincrement())
+  employeeId Int
+  monday     String?
+  tuesday    String?
+  wednesday  String?
+  thursday   String?
+  friday     String?
+  saturday   String?
+  sunday     String?
+  createdAt  DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@map("availabilities")
 }
