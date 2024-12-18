@@ -1,7 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
 const prisma = new PrismaClient();
-
 async function main() {
   const users = [
     {
@@ -30,14 +28,11 @@ async function main() {
       isAvailabilityRequested: false,
     },
   ];
-
   await prisma.user.createMany({
     data: users,
   });
-
   console.log("Seed data created successfully!");
 }
-
 main()
   .catch((e) => {
     console.error(e);
