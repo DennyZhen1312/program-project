@@ -1,13 +1,13 @@
-import { config } from "dotenv";
-import { createClerkClient } from "@clerk/express";
-import express from "express";
+import { ClerkExpressWithAuth, LooseAuthProp } from "@clerk/clerk-sdk-node";
 import cors from "cors";
+import { config } from "dotenv";
+import express from "express";
+import { clerkClient } from "./clerk/client";
+import { validateUser } from "./middleware/validate-user";
+import availabilityRouter from "./routes/availability.router";
+import { router as employeeRouter } from "./routes/employee.router";
 import { router as shiftRouter } from "./routes/shift.router";
 import { router as stationRouter } from "./routes/station.router";
-import { router as employeeRouter } from "./routes/employee.router";
-import availabilityRouter from "./routes/availability.router";
-import { ClerkExpressWithAuth, LooseAuthProp } from "@clerk/clerk-sdk-node";
-import { validateUser } from "./middleware/validate-user";
 
 declare global {
   namespace Express {
@@ -20,9 +20,6 @@ declare global {
 
 config();
 
-export const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY,
-});
 const app = express();
 const PORT = process.env.PORT || 4000;
 
