@@ -9,24 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@syncfusion/ej2-react-gantt": "^28.1.35",
-=======
-    "@syncfusion/ej2-base": "^28.1.33",
-    "@syncfusion/ej2-buttons": "^28.1.33",
-    "@syncfusion/ej2-calendars": "^28.1.33",
-    "@syncfusion/ej2-data": "^28.1.33",
-    "@syncfusion/ej2-dropdowns": "^28.1.33",
-    "@syncfusion/ej2-excel-export": "^28.1.33",
-    "@syncfusion/ej2-inputs": "^28.1.33",
-    "@syncfusion/ej2-lists": "^28.1.33",
-    "@syncfusion/ej2-navigations": "^28.1.33",
-    "@syncfusion/ej2-popups": "^28.1.33",
-    "@syncfusion/ej2-react-schedule": "^28.1.33",
-    "@syncfusion/ej2-schedule": "^28.1.33",
-    "@syncfusion/ej2-react-calendars": "^28.1.35",
-    "@syncfusion/ej2-react-dropdowns": "^28.1.35",
->>>>>>> 0b152e666134fc40d7b2c9385401ca5f0630d73f
     "next": "14.2.20",
     "react": "^18",
     "react-dom": "^18"
@@ -41,8 +24,4 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 0b152e666134fc40d7b2c9385401ca5f0630d73f

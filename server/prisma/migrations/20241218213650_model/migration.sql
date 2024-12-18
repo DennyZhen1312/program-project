@@ -25,6 +25,7 @@ CREATE TABLE "Employee" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "is_availability_requested" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("id")
 );
