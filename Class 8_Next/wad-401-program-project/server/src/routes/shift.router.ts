@@ -4,7 +4,7 @@ import { createShift, getShifts } from "../controllers/shiftcontroller";
 export const router = Router();
 
 // Route to create a shift
-router.post("/shifts", createShift);
+router.post("/", createShift);
 
 // Route to get all shifts
-router.get("/shifts", getShifts);
+router.get("/", getShifts);

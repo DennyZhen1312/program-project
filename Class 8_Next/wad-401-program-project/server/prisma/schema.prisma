@@ -14,11 +14,11 @@ datasource db {
 }
 
 model Shift {
-  id          Int      @id @default(autoincrement())
-  name        String
-  startTime   String
-  endTime     String
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String
+  startTime String
+  endTime   String
+  createdAt DateTime @default(now())
 }
 
 model Station {
@@ -26,4 +26,14 @@ model Station {
   name        String
   description String
   createdAt   DateTime @default(now())
+}
+
+model User {
+  id                      String   @id @default(uuid())
+  name                    String
+  email                   String   @unique
+  isAvailabilityRequested Boolean  @default(false) @map("is_availability_requested")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  @@map("users")
 }
