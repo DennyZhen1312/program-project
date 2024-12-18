@@ -7,7 +7,6 @@ const Availability = () => {
   return (
     <div>
       <ScheduleAvailability />
-      Availability
     </div>
   );
 };

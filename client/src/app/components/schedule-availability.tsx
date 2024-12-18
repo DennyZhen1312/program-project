@@ -11,9 +11,15 @@ import {
   PopupOpenEventArgs,
 } from "@syncfusion/ej2-react-schedule";
 
+import { registerLicense } from "@syncfusion/ej2-base";
+
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { L10n } from "@syncfusion/ej2-base";
 import { AvailabilityType } from "@/types/types";
+
+registerLicense(
+  "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpR2ZGfV5ycEVPal9RTnNfUiweQnxTdEFiW35WcH1WRmVcU0dwVw=="
+);
 
 L10n.load({
   "en-US": {
