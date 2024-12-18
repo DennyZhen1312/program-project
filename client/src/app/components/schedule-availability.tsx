@@ -9,6 +9,8 @@ import {
   EventSettingsModel,
   ActionEventArgs,
   PopupOpenEventArgs,
+  ViewDirective,
+  ViewsDirective,
 } from "@syncfusion/ej2-react-schedule";
 
 import { registerLicense } from "@syncfusion/ej2-base";
@@ -188,7 +190,6 @@ const ScheduleAvailability = () => {
   };
 
   const onPopupOpen = (args: PopupOpenEventArgs): void => {
-    console.log(args);
     if (args.type === "QuickInfo" && args.data && !args.data.Guid) {
       args.cancel = true;
     }
@@ -196,21 +197,23 @@ const ScheduleAvailability = () => {
 
   return (
     <>
+      <ScheduleComponent
+        eventSettings={eventSettings}
+        actionComplete={handleAddSchedule}
+        editorTemplate={editorTemplate}
+        popupOpen={onPopupOpen}
+      >
+        <ViewsDirective>
+          <ViewDirective option="Week" />
+        </ViewsDirective>
+        <Inject services={[Day, Week, TimelineViews]} />
+      </ScheduleComponent>
       <button
         onClick={handleSubmitSchedule}
         className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
       >
         Submit
       </button>
-      <ScheduleComponent
-        height="550px"
-        eventSettings={eventSettings}
-        actionComplete={handleAddSchedule}
-        editorTemplate={editorTemplate}
-        popupOpen={onPopupOpen}
-      >
-        <Inject services={[Day, Week, TimelineViews]} />
-      </ScheduleComponent>
     </>
   );
 };
