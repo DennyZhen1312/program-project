@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsnd --inspect -- src/server.ts"
+    "dev": "tsnd --inspect -- src/server.ts",
+    "db:reset": "prisma migrate reset"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,6 @@
     "prisma": "^6.0.1"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "tsnd --inspect -- prisma/seed.ts"
   }
 }
