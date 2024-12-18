@@ -1,0 +1,27 @@
+{
+  "name": "wad-401-program-project",
+  "version": "1.0.0",
+  "description": "",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run dev -w server",
+    "build": "npm run build --workspaces",
+    "start": "concurrently \"npm:start:*\"",
+    "start:client": "npm start -w client",
+    "start:server": "npm start -w server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.9.4"
+  }
+}
