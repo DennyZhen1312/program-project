@@ -1,7 +1,7 @@
 import { WithAuthProp } from "@clerk/clerk-sdk-node";
 import { Response, Request, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
-import { clerkClient } from "../server";
+import { clerkClient } from "../clerk/client";
 
 const prisma = new PrismaClient();
 
