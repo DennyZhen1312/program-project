@@ -45,3 +45,5 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+("\nInvalid `prisma.employee.createMany()` invocation in\n/Users/bart/Desktop/program-project/server/prisma/seed.ts:7:39\n\n  4 async function main() {\n  5   const clerkUsers = await clerkClient.users.getUserList();\n  6 \n→ 7   const users = await prisma.employee.createMany(\nThe table `public.Employee` does not exist in the current database.");
