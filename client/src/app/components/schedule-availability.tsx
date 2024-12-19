@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { L10n, registerLicense } from "@syncfusion/ej2-base";
+
 import {
   ScheduleComponent,
   Day,
@@ -12,11 +14,7 @@ import {
   ViewDirective,
   ViewsDirective,
 } from "@syncfusion/ej2-react-schedule";
-
-import { registerLicense } from "@syncfusion/ej2-base";
-
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { L10n } from "@syncfusion/ej2-base";
 import { AvailabilityType } from "@/types/types";
 
 registerLicense(
@@ -36,6 +34,11 @@ L10n.load({
 const fieldsData = {
   startTime: { name: "StartTime", title: "Start Duration" },
   endTime: { name: "EndTime", title: "End Duration" },
+  subject: {
+    name: "Employee Name",
+    title: "Employee Name",
+    default: "Employee Name",
+  },
 };
 
 const editorTemplate = (props: object): JSX.Element => {
@@ -192,6 +195,11 @@ const ScheduleAvailability = () => {
   const onPopupOpen = (args: PopupOpenEventArgs): void => {
     if (args.type === "QuickInfo" && args.data && !args.data.Guid) {
       args.cancel = true;
+    } else if (args.type === "QuickInfo" && args.element) {
+      const eventDetails = args.element.querySelector(".e-popup-header");
+      if (eventDetails) {
+        eventDetails.remove();
+      }
     }
   };
 

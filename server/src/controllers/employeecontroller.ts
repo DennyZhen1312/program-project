@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { clerkClient } from "../server";
+import { clerkClient } from "../clerk/client";
 
 const prisma = new PrismaClient();
 
