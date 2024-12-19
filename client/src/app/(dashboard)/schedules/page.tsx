@@ -69,10 +69,18 @@ export default function Schedules () {
     station: "Station",
   };
 
-  const timelineSettings = {
-    timelineViewMode: "Day",
-  };
+ const timelineSettings = {
+        timelineUnitSize: 60,
 
+        topTier: {
+            unit: 'Day',
+            format: 'MMM dd, yyyy'
+        },
+        bottomTier: {
+            unit: 'Hour',
+            format: 'h:mm a'
+        },
+    };
   const editOptions = {
     allowAdding: true,
     allowEditing: true,
@@ -94,7 +102,7 @@ export default function Schedules () {
   return (
     <GanttComponent
     durationUnit="Hour"
-    dateFormat="mm/dd/yyyy hh:mm:ss a"
+    dateFormat="MM/dd/yyyy hh:mm:ss a"
       timelineSettings={timelineSettings}
       dataSource={data}
       taskFields={taskFields}
