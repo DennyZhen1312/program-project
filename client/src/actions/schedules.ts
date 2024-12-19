@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { Employee, Schedule, UserSchedule } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { DateRange } from "react-day-picker";
 
-export const createSchedule = async () => {
+export const createSchedule = async (date: DateRange) => {
   // trigger notification
   // send request to trigger notification with fetch request
   const { getToken } = await auth();
@@ -25,9 +26,14 @@ export const createSchedule = async () => {
     throw new Error("Something went wrong while requesting availability");
   }
 
-  // TODO: we need to create schedule
+  const schedule = await prisma.schedule.create({
+    data: {
+      startDate: date.from!,
+      endDate: date.to!
+    }
+  });
 
-  redirect("/schedules/1");
+  redirect(`/schedules/${schedule.id}`);
 };
 
 export const getSchedules = async () => {
