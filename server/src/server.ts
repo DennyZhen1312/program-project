@@ -1,8 +1,10 @@
-import { ClerkExpressWithAuth, LooseAuthProp } from "@clerk/clerk-sdk-node";
-import { createClerkClient } from "@clerk/express";
-import cors from "cors";
 import { config } from "dotenv";
+config();
+
+import { ClerkExpressWithAuth, LooseAuthProp } from "@clerk/clerk-sdk-node";
+import cors from "cors";
 import express from "express";
+import { clerkClient } from "./clerk/client";
 import { validateUser } from "./middleware/validate-user";
 import availabilityRouter from "./routes/availability.router";
 import { router as employeeRouter } from "./routes/employee.router";
@@ -19,11 +21,6 @@ declare global {
   }
 }
 
-config();
-
-export const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY
-});
 const app = express();
 const PORT = process.env.PORT || 4000;
 

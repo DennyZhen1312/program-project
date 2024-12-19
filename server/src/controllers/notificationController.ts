@@ -1,6 +1,6 @@
-import { clerkClient } from "@clerk/clerk-sdk-node";
 import { Request, Response } from "express";
 import { prisma } from "../../prisma/client";
+import { clerkClient } from "../clerk/client";
 
 // TODO: Faking for demo, implement correctly later
 export const getNotifications = async (req: Request, res: Response) => {
