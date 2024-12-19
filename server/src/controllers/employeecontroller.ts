@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../prisma/client";
-import { clerkClient } from "../server";
+import { clerkClient } from "../clerk/client";
 
 export const getEmployees = async (req: Request, res: Response) => {
   try {

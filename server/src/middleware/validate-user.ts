@@ -1,6 +1,6 @@
 import { WithAuthProp } from "@clerk/clerk-sdk-node";
 import { NextFunction, Request, Response } from "express";
-import { clerkClient } from "../server";
+import { clerkClient } from "../clerk/client";
 
 export const validateUser = async (
   req: WithAuthProp<Request>,
