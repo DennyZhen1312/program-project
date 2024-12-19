@@ -29,7 +29,9 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
         <Notification />
+
         <SignOutButton>
           <button className="px-4 py-2 flex justify-center rounded-full  border-2 hover:bg-stone-800/90 text-white font-semibold">
             Sign Out
