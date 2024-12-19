@@ -27,7 +27,7 @@ app.use(cors());
 app.use(express.json());
 app.use(ClerkExpressWithAuth());
 
-// app.use(validateUser);
+app.use(validateUser);
 app.use("/api", shiftRouter);
 app.use("/api", stationRouter);
 app.use("/api", employeeRouter);
