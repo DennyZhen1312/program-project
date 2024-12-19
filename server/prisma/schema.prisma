@@ -41,31 +41,30 @@ model Employee {
   isAvailabilityRequested Boolean  @default(false) @map("is_availability_requested")
   role                    Role     @default(EMPLOYEE)
 
-  availabilities Availability[]
+  availabilities EmployeeAvailability[]
   userSchedules  UserSchedule[]
 }
 
 model Availability {
   id         Int      @id @default(autoincrement())
-  employeeId Int
-  monday     String?
-  tuesday    String?
-  wednesday  String?
-  thursday   String?
-  friday     String?
-  saturday   String?
-  sunday     String?
+  name       String
+  startDate  DateTime @map("start_date")
+  endDate    DateTime @map("end_date")
   createdAt  DateTime @default(now())
 
-  employee Employee @relation(fields: [employeeId], references: [id])
+  Schedule Schedule[]
+  employees EmployeeAvailability[]
 
   @@map("availabilities")
 }
 
 model Schedule {
-  id            Int            @id @default(autoincrement())
-  startDate     DateTime       @map("start_date")
-  endDate       DateTime       @map("end_date")
+  id             Int          @id @default(autoincrement())
+  startDate      DateTime     @map("start_date")
+  endDate        DateTime     @map("end_date")
+  availabilityId Int          @map("availability_id")
+  availability   Availability @relation(fields: [availabilityId], references: [id])
+
   userSchedules UserSchedule[]
 
   @@map("schedules")
@@ -81,4 +80,16 @@ model UserSchedule {
 
   @@id([employeeId, scheduleId])
   @@map("user_schedules")
+}
+
+model EmployeeAvailability {
+  id         Int      @id @default(autoincrement())
+  employeeId Int      @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id])
+
+  availabilityId Int          @map("availability_id")
+  availability   Availability @relation(fields: [availabilityId], references: [id])
+
+  @@unique([employeeId, availabilityId]) // Ensures unique combinations
+  @@map("employee_availability")
 }

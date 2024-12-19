@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { L10n, registerLicense } from "@syncfusion/ej2-base";
 
 import {
@@ -14,7 +15,6 @@ import {
   ViewDirective,
   ViewsDirective,
 } from "@syncfusion/ej2-react-schedule";
-import { AvailabilityType } from "@/types/types";
 import { editorTemplate } from "./editor-template";
 
 registerLicense(
@@ -31,143 +31,108 @@ L10n.load({
     },
   },
 });
-const fieldsData = {
-  startTime: { name: "StartTime", title: "Start Duration" },
-  endTime: { name: "EndTime", title: "End Duration" },
-  subject: {
-    name: "Employee Name",
-    title: "Employee Name",
-    default: "Employee Name",
-  },
-};
 
 const ScheduleAvailability = () => {
-  const [availability, setAvailability] = useState<AvailabilityType>({
-    employeeId: 1,
-  } as AvailabilityType);
+  const { getToken } = useAuth();
+  const [events, setEvents] = useState([]); // State to store schedule data
 
-  const handleAddSchedule = (args: ActionEventArgs) => {
-    const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  // Fetch availability from backend
+  const fetchAvailability = async () => {
+    try {
+      const token = await getToken(); // Get Clerk token
+      const response = await fetch("http://localhost:4000/api/employeeAvailability", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (args.requestType === "eventCreated" && args.addedRecords) {
-      const addedEvent = args.addedRecords[0];
-
-      if (addedEvent) {
-        const startTime = new Date(addedEvent.StartTime);
-        const endTime = new Date(addedEvent.EndTime);
-        const dayOfWeek = days[startTime.getDay()];
-
-        setAvailability((prev) => ({
-          ...prev,
-          [dayOfWeek]: prev[dayOfWeek]
-            ? `${
-                prev[dayOfWeek]
-              },${startTime.toISOString()},${endTime.toISOString()}`
-            : `${startTime.toISOString()},${endTime.toISOString()}`,
+      if (response.ok) {
+        const data = await response.json();
+        // Map backend data to format compatible with ScheduleComponent
+        const mappedData = data.map((item: any) => ({
+          Id: item.id,
+          StartTime: new Date(item.startDate),
+          EndTime: new Date(item.endDate),
+          Subject: item.name, // Populate the Subject field dynamically
         }));
+        setEvents(mappedData);
+      } else {
+        console.error("Failed to fetch availability:", response.statusText);
       }
-    }
-
-    if (args.requestType === "eventChanged" && args.changedRecords) {
-      const changedEvent = args.changedRecords[0];
-
-      if (changedEvent) {
-        const startTime = new Date(changedEvent.StartTime);
-        const endTime = new Date(changedEvent.EndTime);
-        const dayOfWeek = days[startTime.getDay()];
-
-        setAvailability((prev) => {
-          const updatedDayData = prev[dayOfWeek]
-            ?.split(",")
-            .filter(
-              (time, index, array) =>
-                index % 2 === 0 &&
-                !(
-                  new Date(array[index]).toISOString() ===
-                  new Date(changedEvent.StartTime).toISOString()
-                )
-            )
-            .concat(`${startTime.toISOString()},${endTime.toISOString()}`)
-            .join(",");
-
-          return {
-            ...prev,
-            [dayOfWeek]: updatedDayData || null,
-          };
-        });
-      }
-    }
-
-    if (args.requestType === "eventRemoved" && args.deletedRecords) {
-      const deletedEvent = args.deletedRecords[0];
-
-      if (deletedEvent) {
-        const startTime = new Date(deletedEvent.StartTime);
-        const dayOfWeek = days[startTime.getDay()];
-
-        setAvailability((prev) => {
-          const updatedDayData = prev[dayOfWeek]
-            ?.split(",")
-            .filter(
-              (time, index, array) =>
-                index % 2 === 0 &&
-                !(
-                  new Date(array[index]).toISOString() ===
-                  startTime.toISOString()
-                )
-            )
-            .join(",");
-
-          return {
-            ...prev,
-            [dayOfWeek]: updatedDayData || null,
-          };
-        });
-      }
+    } catch (error) {
+      console.error("Error fetching availability:", error);
     }
   };
 
-  const handleSubmitSchedule = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:4000/api/employeeAvailability",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ availability }),
-        }
-      );
+  useEffect(() => {
+    fetchAvailability(); // Fetch data on component mount
+  }, []);
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Availability submitted successfully:", result);
-      } else {
-        console.error("Failed to submit availability:", response.statusText);
+  const handleAddSchedule = async (args: ActionEventArgs) => {
+    if (
+      args.requestType === "eventCreated" ||
+      args.requestType === "eventChanged"
+    ) {
+      const event = args.addedRecords?.[0] || args.changedRecords?.[0];
+      if (event) {
+        const availability = {
+          startDate: new Date(event.StartTime).toISOString(),
+          endDate: new Date(event.EndTime).toISOString(),
+          scheduleId: 1, // Replace with actual scheduleId if applicable
+        };
+
+        try {
+          const token = await getToken();
+
+          const response = await fetch(
+            "http://localhost:4000/api/employeeAvailability",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ availability }),
+            }
+          );
+
+          if (response.ok) {
+            console.log("Availability submitted successfully");
+            fetchAvailability(); // Refresh the schedule after adding/updating
+          } else {
+            console.error(
+              "Failed to submit availability:",
+              response.statusText
+            );
+          }
+        } catch (error) {
+          console.error("Error submitting availability:", error);
+        }
       }
-    } catch (error) {
-      console.error("Error submitting availability:", error);
+    } else if (args.requestType === "eventRemoved") {
+      console.log("Event removed:", args.deletedRecords?.[0]);
+      // Handle delete functionality if needed.
     }
   };
 
   const eventSettings: EventSettingsModel = {
-    fields: fieldsData,
+    fields: {
+      id: "Id",
+      subject: { name: "Subject", title: "Employee Name" }, // Dynamic field mapping
+      startTime: { name: "StartTime", title: "Start Duration" },
+      endTime: { name: "EndTime", title: "End Duration" },
+    },
+    dataSource: events, // Use the fetched events as data source
   };
 
   const onPopupOpen = (args: PopupOpenEventArgs): void => {
     if (args.type === "QuickInfo" && args.data && !args.data.Guid) {
       args.cancel = true;
-    } else if (args.type === "QuickInfo" && args.element) {
-      const eventDetails = args.element.querySelector(".e-popup-header");
-      if (eventDetails) {
-        eventDetails.remove();
-      }
     }
   };
 
   return (
-    <>
+    <div>
       <ScheduleComponent
         eventSettings={eventSettings}
         actionComplete={handleAddSchedule}
@@ -179,13 +144,7 @@ const ScheduleAvailability = () => {
         </ViewsDirective>
         <Inject services={[Day, Week, TimelineViews]} />
       </ScheduleComponent>
-      <button
-        onClick={handleSubmitSchedule}
-        className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-      >
-        Submit
-      </button>
-    </>
+    </div>
   );
 };
 

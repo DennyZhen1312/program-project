@@ -1,5 +1,16 @@
 import { Request, Response } from "express";
 import { prisma } from "../../prisma/client";
+import { clerkClient } from "../clerk/client";
+
+export const getAvailabilities = async (req: Request, res: Response) => {
+  try {
+    const availabilities = await prisma.availability.findMany();
+    res.status(200).json(availabilities);
+  } catch (error) {
+    console.error("Error fetching employees:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 export const requestAvailabilities = async (req: Request, res: Response) => {
   try {
@@ -47,37 +58,59 @@ export const postUserAvailability = async (req: Request, res: Response) => {
   const { availability } = req.body;
 
   try {
-    if (!availability || !availability.employeeId) {
+    if (!availability || !availability.startDate || !availability.endDate) {
       res.status(400).json({ error: "Invalid availability data" });
+      return;
     }
 
-    const {
-      employeeId,
-      mon: monday,
-      tue: tuesday,
-      wed: wednesday,
-      thu: thursday,
-      fri: friday,
-      sat: saturday,
-      sun: sunday
-    } = availability;
+    const clerkId = req.auth.userId;
 
+    if (!clerkId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    // Fetch the email from Clerk
+    const clerkUser = await clerkClient.users.getUser(clerkId);
+    const email = clerkUser.primaryEmailAddress?.emailAddress;
+
+    if (!email) {
+      res.status(400).json({ error: "User email not found" });
+      return;
+    }
+
+    // Find the employee with the matching email
+    const employee = await prisma.employee.findFirst({
+      where: { email },
+    });
+
+    if (!employee) {
+      res.status(404).json({ error: "Employee not found" });
+      return;
+    }
+
+    const { id: employeeId, name } = employee;
+
+    // Create availability
     const newAvailability = await prisma.availability.create({
       data: {
         employeeId,
-        monday,
-        tuesday,
-        wednesday,
-        thursday,
-        friday,
-        saturday,
-        sunday
-      }
+        name: name || "Default Availability", // Use the employee's name or fallback
+        startDate: new Date(availability.startDate),
+        endDate: new Date(availability.endDate),
+        scheduleId: availability.scheduleId,
+      },
+    });
+
+    // Update the employee's isAvailabilityRequested status to false
+    await prisma.employee.update({
+      where: { id: employeeId },
+      data: { isAvailabilityRequested: false },
     });
 
     res.status(201).json({
-      message: "Availability created successfully",
-      data: newAvailability
+      message: "Availability created and request status updated successfully",
+      data: newAvailability,
     });
   } catch (error) {
     console.error("Error creating availability:", error);

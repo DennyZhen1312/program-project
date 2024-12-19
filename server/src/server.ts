@@ -11,6 +11,7 @@ import { router as employeeRouter } from "./routes/employee.router";
 import { router as notificationRouter } from "./routes/notification.router";
 import { router as shiftRouter } from "./routes/shift.router";
 import { router as stationRouter } from "./routes/station.router";
+import { prisma } from "../prisma/client";
 
 declare global {
   namespace Express {
@@ -34,6 +35,16 @@ app.use("/api", stationRouter);
 app.use("/api", employeeRouter);
 app.use("/api", availabilityRouter);
 app.use("/api/notifications", notificationRouter);
+
+app.get("/api/employees/availability", async (req, res) => {
+  try {
+      const availabilities = await prisma.availability.findMany();
+      res.status(200).json(availabilities);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  })
 
 app.get("/users", async (req, res) => {
   // Get the `userId` from the `Auth` object

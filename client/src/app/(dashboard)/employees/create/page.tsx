@@ -2,6 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CreateEmployee() {
   const [name, setName] = useState("");
@@ -10,6 +11,8 @@ export default function CreateEmployee() {
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
   const { getToken } = useAuth();
+
+  const router = useRouter();
 
   const handleAddEmployee = () => {
     if (!name) {
@@ -61,6 +64,9 @@ export default function CreateEmployee() {
         setShowModal(false);
         setName("");
         setEmail("");
+        setTimeout(() => {
+          router.push("/employees");
+        }, 2000);
       } else {
         const result = await sendInvitationResponse.json();
         setError(result.message || "Failed to send invitation.");
