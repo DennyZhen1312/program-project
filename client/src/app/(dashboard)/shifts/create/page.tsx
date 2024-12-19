@@ -46,7 +46,7 @@ export default function CreateShift() {
         setStartTime("");
         setEndTime("");
         setTimeout(() => {
-          router.push("/stations");
+          router.push("/shifts");
         }, 3000);
         console.log("Created Shift:", result);
       } else {
