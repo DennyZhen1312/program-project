@@ -78,7 +78,6 @@ const ScheduleAvailability = () => {
         const availability = {
           startDate: new Date(event.StartTime).toISOString(),
           endDate: new Date(event.EndTime).toISOString(),
-          scheduleId: 1, // Replace with actual scheduleId if applicable
         };
 
         try {

@@ -94,11 +94,17 @@ export const postUserAvailability = async (req: Request, res: Response) => {
     // Create availability
     const newAvailability = await prisma.availability.create({
       data: {
-        employeeId,
         name: name || "Default Availability", // Use the employee's name or fallback
         startDate: new Date(availability.startDate),
         endDate: new Date(availability.endDate),
-        scheduleId: availability.scheduleId,
+      },
+    });
+
+    // Create the relationship in EmployeeAvailability
+    await prisma.employeeAvailability.create({
+      data: {
+        employeeId,
+        availabilityId: newAvailability.id,
       },
     });
 
@@ -117,6 +123,7 @@ export const postUserAvailability = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to create availability" });
   }
 };
+
 
 export const getUserAvailability = async (req: Request, res: Response) => {
   const { id } = req.params;

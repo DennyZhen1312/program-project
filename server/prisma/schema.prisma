@@ -62,8 +62,8 @@ model Schedule {
   id             Int          @id @default(autoincrement())
   startDate      DateTime     @map("start_date")
   endDate        DateTime     @map("end_date")
-  availabilityId Int          @map("availability_id")
-  availability   Availability @relation(fields: [availabilityId], references: [id])
+  availabilityId Int?          @map("availability_id")
+  availability   Availability? @relation(fields: [availabilityId], references: [id])
 
   userSchedules UserSchedule[]
 

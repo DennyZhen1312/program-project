@@ -30,6 +30,8 @@ import "@syncfusion/ej2-react-gantt/styles/material.css";
 import "@syncfusion/ej2-richtexteditor/styles/material.css";
 import "@syncfusion/ej2-splitbuttons/styles/material.css";
 import "@syncfusion/ej2-treegrid/styles/material.css";
+import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 
 registerLicense(
   "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpR2ZGfV5ycEVPal9RTnNfUiweQnxTdEFiW35WcH1WRmVcU0dwVw=="
@@ -39,9 +41,13 @@ type Props = {
   to: Date;
   from: Date;
   userSchedules: (UserSchedule & { employee: Employee })[];
+  availabilities: any;
+  formattedStartDate: any;
 };
 
-export function Scheduler({ from, to, userSchedules }: Props) {
+export function Scheduler({ from, to, userSchedules, availabilities, formattedStartDate }: Props) {
+  
+
   return (
     <GanttComponent
       durationUnit="Hour"
@@ -55,17 +61,7 @@ export function Scheduler({ from, to, userSchedules }: Props) {
         topTier: { unit: "Day", format: "MMM dd, yyyy" },
         bottomTier: { unit: "Hour", format: "h:mm a" }
       }}
-      dataSource={userSchedules.map(
-        ({ employee: { id, name }, startTime, endTime }) => ({
-          ID: id,
-          Name: name,
-          StartTime: startTime,
-          EndTime: endTime
-        })
-      )}
-      actionComplete={(args) => {
-        console.log(args);
-      }}
+      // dataSource={}
       taskFields={{
         id: "ID",
         name: "Name",
@@ -84,7 +80,7 @@ export function Scheduler({ from, to, userSchedules }: Props) {
       height="450px"
     >
       <ColumnsDirective>
-        {/* <ColumnDirective
+        <ColumnDirective
           field="Status"
           headerText="Task Status"
           width="150"
@@ -99,15 +95,29 @@ export function Scheduler({ from, to, userSchedules }: Props) {
               fields: { text: "text", value: "value" }
             }
           }}
-        /> */}
+        />
         <ColumnDirective field="ID" width="80"></ColumnDirective>
         <ColumnDirective
           field="Name"
           headerText="Name"
           width="250"
           clipMode="EllipsisWithTooltip"
+          
+          editType="dropdownedit"
+          edit={{
+            params: {
+              dataSource: availabilities.map(employees => employees.name), // Dynamically fetched employees
+              fields: { text: "text", value: "value" },
+            },
+          }}
         ></ColumnDirective>
-        <ColumnDirective field="StartTime"></ColumnDirective>
+        <ColumnDirective field="StartTime" headerText="StartTime"editType="dropdownedit"
+          edit={{
+            params: {
+              dataSource: [{text: formattedStartDate.map(startDate=>startDate.formattedStartDate), value: formattedStartDate.map(startDate=>startDate.formattedStartDate)}],
+              fields: { text: "text", value: "value" },
+            },
+          }}></ColumnDirective>
         <ColumnDirective field="EndTime"></ColumnDirective>
       </ColumnsDirective>
       <AddDialogFieldsDirective>
