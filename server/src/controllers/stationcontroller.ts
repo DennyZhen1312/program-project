@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma/client";
 
 export const createStation = async (req: Request, res: Response) => {
   try {
@@ -13,7 +11,7 @@ export const createStation = async (req: Request, res: Response) => {
     }
 
     const newStation = await prisma.station.create({
-      data: { name, description },
+      data: { name, description }
     });
 
     res.status(201).json(newStation);
@@ -22,7 +20,6 @@ export const createStation = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 export const getStations = async (req: Request, res: Response) => {
   try {
@@ -43,8 +40,8 @@ export const getStationById = async (req: Request, res: Response) => {
   try {
     const station = await prisma.station.findUnique({
       where: {
-        id: +id,
-      },
+        id: +id
+      }
     });
     res.status(200).json(station);
   } catch (error) {
@@ -57,8 +54,8 @@ export const deleteStationById = async (req: Request, res: Response) => {
   try {
     await prisma.station.delete({
       where: {
-        id: +id,
-      },
+        id: +id
+      }
     });
     res.status(200).send("Deleted");
   } catch (error) {
@@ -74,8 +71,8 @@ export const updateStationByID = async (req: Request, res: Response) => {
       where: { id: +id },
       data: {
         name,
-        description: description || "",
-      },
+        description: description || ""
+      }
     });
     res.status(200).json(updatedStation);
   } catch (error) {

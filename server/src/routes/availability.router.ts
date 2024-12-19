@@ -9,6 +9,6 @@ const availabilityRouter: Router = express.Router();
 
 availabilityRouter.post("/requestAvailabilities", requestAvailabilities);
 availabilityRouter.get("/isRequested/:id", isRequested);
-availabilityRouter.post("/employeeAvailability", postUserAvailability);
+availabilityRouter.post("/employeeAvailability/", postUserAvailability);
 
 export default availabilityRouter;
