@@ -1,11 +1,14 @@
+import { config } from "dotenv";
+config();
+
 import { ClerkExpressWithAuth, LooseAuthProp } from "@clerk/clerk-sdk-node";
 import cors from "cors";
-import { config } from "dotenv";
 import express from "express";
 import { clerkClient } from "./clerk/client";
 import { validateUser } from "./middleware/validate-user";
 import availabilityRouter from "./routes/availability.router";
 import { router as employeeRouter } from "./routes/employee.router";
+import { router as notificationRouter } from "./routes/notification.router";
 import { router as shiftRouter } from "./routes/shift.router";
 import { router as stationRouter } from "./routes/station.router";
 
@@ -17,8 +20,6 @@ declare global {
     }
   }
 }
-
-config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -32,6 +33,7 @@ app.use("/api", shiftRouter);
 app.use("/api", stationRouter);
 app.use("/api", employeeRouter);
 app.use("/api", availabilityRouter);
+app.use("/api/notifications", notificationRouter);
 
 app.get("/users", async (req, res) => {
   // Get the `userId` from the `Auth` object
@@ -39,6 +41,7 @@ app.get("/users", async (req, res) => {
   const user = await clerkClient.users.getUser(clerkId);
   res.status(200).json(user);
 });
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

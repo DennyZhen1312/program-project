@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { prisma } from "../../prisma/client";
 import { clerkClient } from "../clerk/client";
-
-const prisma = new PrismaClient();
 
 export const getEmployees = async (req: Request, res: Response) => {
   try {
@@ -24,7 +22,7 @@ export const createEmployee = async (req: Request, res: Response) => {
     }
 
     const newEmployee = await prisma.employee.create({
-      data: { name, email },
+      data: { name, email }
     });
 
     res.status(201).json(newEmployee);
@@ -40,7 +38,7 @@ export const createInvitation = async (req: Request, res: Response) => {
   try {
     const response = await clerkClient.invitations.createInvitation({
       emailAddress,
-      redirectUrl: redirectUrl || "http://localhost:5173/employee-signup",
+      redirectUrl: redirectUrl || "http://localhost:5173/employee-signup"
     });
 
     res.status(200).json({ success: true, invitation: response });

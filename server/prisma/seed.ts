@@ -1,5 +1,5 @@
-import { clerkClient } from "@clerk/clerk-sdk-node";
 import { PrismaClient } from "@prisma/client";
+import { clerkClient } from "../src/clerk/client";
 const prisma = new PrismaClient();
 async function main() {
   const clerkUsers = await clerkClient.users.getUserList();
