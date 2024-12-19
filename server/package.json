@@ -27,6 +27,6 @@
     "prisma": "^6.0.1"
   },
   "prisma": {
-    "seed": "tsnd --inspect -- prisma/seed.ts"
+    "seed": "tsnd --inspect=9234 -- prisma/seed.ts"
   }
 }

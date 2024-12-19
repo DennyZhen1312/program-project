@@ -1,8 +1,9 @@
-"use client";
+import { createSchedule, getSchedules } from "@/actions/schedules";
+import { redirect } from "next/navigation";
 
-import { createSchedule } from "@/actions/actions/schedules";
+export default async function Schedules() {
+  const schedules = await getSchedules();
 
-export default function Schedules() {
   return (
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex justify-between items-center mb-10">
@@ -14,34 +15,35 @@ export default function Schedules() {
         </form>
       </div>
 
-      {/* {error && <p className="text-red-500">Error: {error}</p>}
-
-      {!loading && !error && (
+      {
         <div className="w-full">
           <div className="w-full flex mb-4">
-            <p className="w-full text-lg">Station Name</p>
-            <p className="w-full text-lg">Description</p>
+            <p className="w-full text-lg">Start Date</p>
+            <p className="w-full text-lg">End Date</p>
           </div>
           <div className="flex flex-col gap-4">
-            {stations.map((station: StationType) => (
-              <button
-                key={station.id}
-                onClick={() => handleStationClick(station.id)}
-                className="w-full transition duration-200"
+            {schedules.map(({ id, startDate, endDate }) => (
+              <form
+                key={id}
+                action={async () => {
+                  "use server";
+
+                  redirect(`/schedules/${id}`);
+                }}
               >
-                <div className="bg-white shadow rounded-lg flex py-4 hover:bg-gray-100 hover:shadow-md">
-                  <p className="w-full text-left px-4">{station.name}</p>
-                  <p className="w-full text-left">
-                    {station.description === ""
-                      ? "No description provided"
-                      : station.description}
-                  </p>
-                </div>
-              </button>
+                <button className="w-full transition duration-200">
+                  <div className="bg-white shadow rounded-lg flex py-4 hover:bg-gray-100 hover:shadow-md">
+                    <p className="w-full text-left px-4">
+                      {startDate.toString()}
+                    </p>
+                    <p className="w-full text-left">{endDate.toString()}</p>
+                  </div>
+                </button>
+              </form>
             ))}
           </div>
         </div>
-      )} */}
+      }
     </div>
   );
 }

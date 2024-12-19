@@ -40,6 +40,9 @@ async function main() {
 
   console.log(`${stations.count} station data created successfully!`);
 
+  const startTime = moment().weekday(0).hour(0).toDate();
+  const endTime = moment().weekday(0).hour(8).toDate();
+
   const schedule = await prisma.schedule.create({
     data: {
       startDate: moment().weekday(0).toDate(),
@@ -51,8 +54,8 @@ async function main() {
           data: [
             {
               employeeId: 1,
-              startTime: moment().weekday(0).hour(0).toDate(),
-              endTime: moment().weekday(0).hour(2).toDate()
+              startTime,
+              endTime
             }
           ]
         }

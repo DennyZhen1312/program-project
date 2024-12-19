@@ -76,8 +76,8 @@ model UserSchedule {
   employee   Employee @relation(fields: [employeeId], references: [id])
   scheduleId Int      @map("schedule_id")
   schedule   Schedule @relation(fields: [scheduleId], references: [id])
-  startTime  DateTime @map("start_time")
-  endTime    DateTime @map("end_time")
+  startTime  DateTime @map("start_time") @db.Timestamp(3)
+  endTime    DateTime @map("end_time") @db.Timestamp(3)
 
   @@id([employeeId, scheduleId])
   @@map("user_schedules")

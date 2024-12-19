@@ -14,6 +14,7 @@ import {
   Toolbar
 } from "@syncfusion/ej2-react-gantt";
 
+import { Employee, UserSchedule } from "@prisma/client";
 import { registerLicense } from "@syncfusion/ej2-base";
 import "@syncfusion/ej2-base/styles/material.css";
 import "@syncfusion/ej2-buttons/styles/material.css";
@@ -34,38 +35,13 @@ registerLicense(
   "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpR2ZGfV5ycEVPal9RTnNfUiweQnxTdEFiW35WcH1WRmVcU0dwVw=="
 );
 
-const data: object[] = [
-  {
-    ID: 1,
-    Name: "Project initiation",
-    StartTime: new Date("04/02/2019 01:00 PM"),
-    EndTime: new Date("04/02/2019 04:00 PM")
-  },
-  {
-    ID: 5,
-    Name: "Project estimation",
-    StartTime: new Date("04/2/2019 01:00 PM"),
-    EndTime: new Date("04/2/2019 05:00 PM")
-  },
-  {
-    ID: 13,
-    Name: "Sign contract",
-    StartTime: new Date("04/2/2019")
-  },
-  {
-    ID: 14,
-    Name: "Plan timeline",
-    StartTime: new Date("02/04/2019"),
-    EndTime: new Date("02/10/2019")
-  }
-];
-
 type Props = {
   to: Date;
   from: Date;
+  userSchedules: (UserSchedule & { employee: Employee })[];
 };
 
-export default function Scheduler({ from, to }: Props) {
+export function Scheduler({ from, to, userSchedules }: Props) {
   return (
     <GanttComponent
       durationUnit="Hour"
@@ -77,7 +53,14 @@ export default function Scheduler({ from, to }: Props) {
         topTier: { unit: "Week", format: "MMM dd, yyyy" },
         bottomTier: { unit: "Hour", format: "h:mm a" }
       }}
-      dataSource={data}
+      dataSource={userSchedules.map(
+        ({ employee: { id, name }, startTime, endTime }) => ({
+          ID: id,
+          Name: name,
+          StartTime: new Date(startTime),
+          EndTime: new Date(endTime)
+        })
+      )}
       taskFields={{
         id: "ID",
         name: "Name",

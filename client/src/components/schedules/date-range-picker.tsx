@@ -16,7 +16,7 @@ import { HTMLAttributes } from "react";
 
 type Props = HTMLAttributes<HTMLDivElement> & {
   date?: DateRange;
-  onSelect: SelectRangeEventHandler;
+  onSelect?: SelectRangeEventHandler;
 };
 
 export function DatePickerWithRange({ className, date, onSelect }: Props) {

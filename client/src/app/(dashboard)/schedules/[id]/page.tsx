@@ -1,30 +1,22 @@
-"use client";
-
+import { getSchedule } from "@/actions/schedules";
 import { DatePickerWithRange } from "@/components/schedules/date-range-picker";
-import Scheduler from "@/components/schedules/scheduler";
-import moment from "moment";
-import React from "react";
-import { DateRange } from "react-day-picker";
+import { Scheduler } from "@/components/schedules/scheduler";
 
-export default function Schedules() {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: moment().weekday(8).toDate(),
-    to: moment()
-      .weekday(8 + 7)
-      .toDate()
-  });
+type Props = {
+  params: { id: string };
+};
 
-  console.log(date);
+export default async function Schedule({ params }: Props) {
+  const { startDate, endDate, userSchedules } = await getSchedule(+params.id);
 
   return (
     <div>
       <DatePickerWithRange
-        date={date}
+        date={{ from: startDate, to: endDate }}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onSelect={(dateRange: DateRange | undefined) => setDate(dateRange)}
       />
-      {date?.from && date.to && <Scheduler from={date.from} to={date.to} />}
+      <Scheduler from={startDate} to={endDate} userSchedules={userSchedules} />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use server";
 
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { Employee, Schedule, UserSchedule } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 export const createSchedule = async () => {
@@ -26,4 +28,27 @@ export const createSchedule = async () => {
   // TODO: we need to create schedule
 
   redirect("/schedules/1");
+};
+
+export const getSchedules = async () => {
+  const schedules = await prisma.schedule.findMany();
+
+  return schedules;
+};
+
+export const getSchedule = async (
+  id: number
+): Promise<
+  Schedule & { userSchedules: (UserSchedule & { employee: Employee })[] }
+> => {
+  const schedule = await prisma.schedule.findUnique({
+    where: { id },
+    include: { userSchedules: { include: { employee: true } } }
+  });
+
+  if (!schedule) {
+    throw Error(`Schedule not found with id ${id}`);
+  }
+
+  return schedule;
 };

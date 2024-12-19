@@ -5,7 +5,7 @@ import {
   PopoverTrigger
 } from "@/components/ui/popover";
 import { AlertCircle, Bell } from "lucide-react";
-import { getNotifications } from "../../actions/actions/notifications";
+import { getNotifications } from "../../actions/notifications";
 
 export async function Notification() {
   const notifications = await getNotifications();
