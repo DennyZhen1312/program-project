@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import moment from "moment";
 import { clerkClient } from "../src/clerk/client";
+
 const prisma = new PrismaClient();
+
 async function main() {
   const clerkUsers = await clerkClient.users.getUserList();
 
@@ -36,6 +39,31 @@ async function main() {
   });
 
   console.log(`${stations.count} station data created successfully!`);
+
+  const schedule = await prisma.schedule.create({
+    data: {
+      startDate: moment().weekday(0).toDate(),
+      endDate: moment()
+        .weekday(0 + 7)
+        .toDate(),
+      userSchedules: {
+        createMany: {
+          data: [
+            {
+              employeeId: 1,
+              startTime: moment().weekday(0).hour(0).toDate(),
+              endTime: moment().weekday(0).hour(2).toDate()
+            }
+          ]
+        }
+      }
+    },
+    include: {
+      userSchedules: true
+    }
+  });
+
+  console.log(JSON.stringify(schedule));
 }
 main()
   .catch((e) => {

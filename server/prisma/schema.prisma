@@ -28,14 +28,21 @@ model Station {
   createdAt   DateTime @default(now())
 }
 
+enum Role {
+  MANAGER
+  EMPLOYEE
+}
+
 model Employee {
   id                      Int      @id @default(autoincrement())
   name                    String
   email                   String   @unique
   createdAt               DateTime @default(now())
   isAvailabilityRequested Boolean  @default(false) @map("is_availability_requested")
+  role                    Role     @default(EMPLOYEE)
 
   availabilities Availability[]
+  userSchedules  UserSchedule[]
 }
 
 model Availability {
@@ -53,4 +60,25 @@ model Availability {
   employee Employee @relation(fields: [employeeId], references: [id])
 
   @@map("availabilities")
+}
+
+model Schedule {
+  id            Int            @id @default(autoincrement())
+  startDate     DateTime       @map("start_date")
+  endDate       DateTime       @map("end_date")
+  userSchedules UserSchedule[]
+
+  @@map("schedules")
+}
+
+model UserSchedule {
+  employeeId Int      @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  scheduleId Int      @map("schedule_id")
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  startTime  DateTime @map("start_time")
+  endTime    DateTime @map("end_time")
+
+  @@id([employeeId, scheduleId])
+  @@map("user_schedules")
 }
