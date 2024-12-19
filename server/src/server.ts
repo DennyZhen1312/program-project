@@ -5,6 +5,8 @@ import { config } from "dotenv";
 import express from "express";
 import { validateUser } from "./middleware/validate-user";
 import availabilityRouter from "./routes/availability.router";
+import { router as employeeRouter } from "./routes/employee.router";
+import { router as notificationRouter } from "./routes/notification.router";
 import { router as shiftRouter } from "./routes/shift.router";
 import { router as stationRouter } from "./routes/station.router";
 
