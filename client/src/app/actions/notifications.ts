@@ -14,6 +14,9 @@ type Notification = {
 export const getNotifications = async (): Promise<Notification[]> => {
   const { getToken } = await auth();
   const token = await getToken();
+
+  console.log(token);
+
   const response = await fetch("http://localhost:4000/api/notifications", {
     headers: {
       Authorization: `Bearer ${token}`
