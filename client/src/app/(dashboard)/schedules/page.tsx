@@ -1,4 +1,5 @@
-import { createSchedule, getSchedules } from "@/actions/schedules";
+import { getSchedules } from "@/actions/schedules";
+import NewScheduleForm from "@/components/schedules/new-schedule-form";
 import { redirect } from "next/navigation";
 
 export default async function Schedules() {
@@ -8,11 +9,7 @@ export default async function Schedules() {
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex justify-between items-center mb-10">
         <h1 className="text-4xl font-bold">Schedules</h1>
-        <form action={createSchedule}>
-          <button className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
-            Create New Schedule
-          </button>
-        </form>
+        <NewScheduleForm />
       </div>
 
       {

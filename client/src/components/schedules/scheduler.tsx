@@ -47,20 +47,25 @@ export function Scheduler({ from, to, userSchedules }: Props) {
       durationUnit="Hour"
       dateFormat="MM/dd/yyyy hh:mm:ss a"
       projectStartDate={from}
+      timezone="America/Los_Angeles"
       projectEndDate={to}
+      dayWorkingTime={[{ from: 0, to: 24 }]}
       timelineSettings={{
         timelineUnitSize: 60,
-        topTier: { unit: "Week", format: "MMM dd, yyyy" },
+        topTier: { unit: "Day", format: "MMM dd, yyyy" },
         bottomTier: { unit: "Hour", format: "h:mm a" }
       }}
       dataSource={userSchedules.map(
         ({ employee: { id, name }, startTime, endTime }) => ({
           ID: id,
           Name: name,
-          StartTime: new Date(startTime),
-          EndTime: new Date(endTime)
+          StartTime: startTime,
+          EndTime: endTime
         })
       )}
+      actionComplete={(args) => {
+        console.log(args);
+      }}
       taskFields={{
         id: "ID",
         name: "Name",
@@ -79,7 +84,7 @@ export function Scheduler({ from, to, userSchedules }: Props) {
       height="450px"
     >
       <ColumnsDirective>
-        <ColumnDirective
+        {/* <ColumnDirective
           field="Status"
           headerText="Task Status"
           width="150"
@@ -94,7 +99,7 @@ export function Scheduler({ from, to, userSchedules }: Props) {
               fields: { text: "text", value: "value" }
             }
           }}
-        />
+        /> */}
         <ColumnDirective field="ID" width="80"></ColumnDirective>
         <ColumnDirective
           field="Name"
