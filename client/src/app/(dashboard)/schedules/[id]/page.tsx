@@ -1,5 +1,5 @@
+import { getEmployees } from "@/actions/employees";
 import { getSchedule } from "@/actions/schedules";
-import { DatePickerWithRange } from "@/components/schedules/date-range-picker";
 import { Scheduler } from "@/components/schedules/scheduler";
 
 type Props = {
@@ -8,15 +8,16 @@ type Props = {
 
 export default async function Schedule({ params }: Props) {
   const { startDate, endDate, userSchedules } = await getSchedule(+params.id);
+  const employees = await getEmployees();
 
   return (
-    <div>
-      <DatePickerWithRange
-        date={{ from: startDate, to: endDate }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+    <div className="p-8">
+      <Scheduler
+        from={startDate}
+        to={endDate}
+        userSchedules={userSchedules}
+        employees={employees}
       />
-      <Scheduler from={startDate} to={endDate} userSchedules={userSchedules} />
     </div>
   );
 }

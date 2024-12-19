@@ -39,9 +39,10 @@ type Props = {
   to: Date;
   from: Date;
   userSchedules: (UserSchedule & { employee: Employee })[];
+  employees: Employee[];
 };
 
-export function Scheduler({ from, to, userSchedules }: Props) {
+export function Scheduler({ from, to, userSchedules, employees }: Props) {
   return (
     <GanttComponent
       durationUnit="Hour"
@@ -56,15 +57,21 @@ export function Scheduler({ from, to, userSchedules }: Props) {
         bottomTier: { unit: "Hour", format: "h:mm a" }
       }}
       dataSource={userSchedules.map(
-        ({ employee: { id, name }, startTime, endTime }) => ({
-          ID: id,
-          Name: name,
+        ({
+          employee: { name },
+          startTime,
+          endTime,
+          employeeId,
+          scheduleId
+        }) => ({
+          ID: employeeId + scheduleId,
+          Employee: name,
           StartTime: startTime,
           EndTime: endTime
         })
       )}
       actionComplete={(args) => {
-        console.log(args);
+        console.log(args.rows[0].data);
       }}
       taskFields={{
         id: "ID",
@@ -84,46 +91,43 @@ export function Scheduler({ from, to, userSchedules }: Props) {
       height="450px"
     >
       <ColumnsDirective>
-        {/* <ColumnDirective
-          field="Status"
-          headerText="Task Status"
+        <ColumnDirective field="ID"></ColumnDirective>
+
+        <ColumnDirective
+          field="Employee"
+          headerText="Employee"
           width="150"
           editType="dropdownedit" // Enable dropdown editor
           edit={{
             params: {
-              dataSource: [
-                { text: "Not Started", value: "Not Started" },
-                { text: "In Progress", value: "In Progress" },
-                { text: "Completed", value: "Completed" }
-              ],
+              dataSource: employees.map(({ name }) => ({
+                text: name,
+                value: name
+              })),
               fields: { text: "text", value: "value" }
             }
           }}
-        /> */}
-        <ColumnDirective field="ID" width="80"></ColumnDirective>
-        <ColumnDirective
-          field="Name"
-          headerText="Name"
-          width="250"
-          clipMode="EllipsisWithTooltip"
-        ></ColumnDirective>
+        />
+
         <ColumnDirective field="StartTime"></ColumnDirective>
+
         <ColumnDirective field="EndTime"></ColumnDirective>
       </ColumnsDirective>
       <AddDialogFieldsDirective>
         <AddDialogFieldDirective
           type="General"
           headerText="General"
-          fields={["ID", "Name", "StartTime", "EndTime", "Status"]}
+          fields={["ID", "Employee", "StartTime", "EndTime"]}
         ></AddDialogFieldDirective>
       </AddDialogFieldsDirective>
       <EditDialogFieldsDirective>
         <EditDialogFieldDirective
           type="General"
           headerText="General"
-          fields={["ID", "Name", "StartTime", "EndTime", "Status"]}
+          fields={["ID", "Employee", "StartTime", "EndTime"]}
         ></EditDialogFieldDirective>
       </EditDialogFieldsDirective>
+
       <Inject services={[Edit, Selection, Toolbar]} />
     </GanttComponent>
   );
