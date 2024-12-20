@@ -86,7 +86,8 @@ model EmployeeAvailability {
   employee       Employee     @relation(fields: [employeeId], references: [id])
   availabilityId Int          @map("availability_id")
   availability   Availability @relation(fields: [availabilityId], references: [id])
+  startTime      DateTime     @map("start_time")
+  endTime        DateTime     @map("end_time")
 
-  @@unique([employeeId, availabilityId]) // Ensures unique combinations
   @@map("employee_availability")
 }

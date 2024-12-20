@@ -1,13 +1,23 @@
-import ScheduleAvailability from "@/app/components/schedule-availability";
+import { getEmployeeAvailabilities } from "@/actions/availabilities";
+import { AvailabilityScheduler } from "@/components/availabilities/availability-scheduler";
 
 // Page just to test the component.
 
-const Availability = () => {
-  return (
-    <div>
-      <ScheduleAvailability />
-    </div>
-  );
+type Props = {
+  params: {
+    id: string;
+  };
 };
 
-export default Availability;
+export default async function Availability({ params: { id } }: Props) {
+  const employeeAvailabilities = await getEmployeeAvailabilities(+id);
+
+  return (
+    <div className="p-8">
+      <AvailabilityScheduler
+        employeeAvailabilities={employeeAvailabilities}
+        availabilityId={+id}
+      />
+    </div>
+  );
+}

@@ -64,13 +64,13 @@ model user_schedules {
 }
 
 model employee_availability {
-  id              Int            @id @default(autoincrement())
   employee_id     Int
   availability_id Int
+  end_time        DateTime
+  start_time      DateTime
+  id              Int            @id @default(autoincrement())
   availabilities  availabilities @relation(fields: [availability_id], references: [id])
   Employee        Employee       @relation(fields: [employee_id], references: [id])
-
-  @@unique([employee_id, availability_id])
 }
 
 enum Role {
