@@ -1,15 +1,15 @@
-import { getSchedules } from "@/actions/schedules";
-import NewScheduleForm from "@/components/schedules/new-schedule-form";
+// Page just to test the component.
+
+import { getAvailabilities } from "@/actions/availabilities";
 import { redirect } from "next/navigation";
 
-export default async function Schedules() {
-  const schedules = await getSchedules();
+export default async function Availability() {
+  const availabilities = await getAvailabilities();
 
   return (
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl font-bold">Schedules</h1>
-        <NewScheduleForm />
+        <h1 className="text-4xl font-bold">Availabilities</h1>
       </div>
 
       <div className="w-full">
@@ -18,13 +18,13 @@ export default async function Schedules() {
           <p className="w-full text-lg">End Date</p>
         </div>
         <div className="flex flex-col gap-4">
-          {schedules.map(({ id, startDate, endDate }) => (
+          {availabilities.map(({ id, startDate, endDate }) => (
             <form
               key={id}
               action={async () => {
                 "use server";
 
-                redirect(`/schedules/${id}`);
+                redirect(`/availabilities/${id}`);
               }}
             >
               <button className="w-full transition duration-200">

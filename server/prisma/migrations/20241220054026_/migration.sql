@@ -25,6 +25,7 @@ CREATE TABLE "Station" (
 -- CreateTable
 CREATE TABLE "Employee" (
     "id" SERIAL NOT NULL,
+    "clerkId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,19 +33,6 @@ CREATE TABLE "Employee" (
     "role" "Role" NOT NULL DEFAULT 'EMPLOYEE',
 
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "availabilities" (
-    "id" SERIAL NOT NULL,
-    "employeeId" INTEGER NOT NULL,
-    "name" TEXT NOT NULL,
-    "start_date" TIMESTAMP(3) NOT NULL,
-    "end_date" TIMESTAMP(3) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "schedule_id" INTEGER NOT NULL,
-
-    CONSTRAINT "availabilities_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -67,6 +55,17 @@ CREATE TABLE "user_schedules" (
 );
 
 -- CreateTable
+CREATE TABLE "availabilities" (
+    "id" SERIAL NOT NULL,
+    "start_date" TIMESTAMP(3) NOT NULL,
+    "end_date" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "scheduleId" INTEGER NOT NULL,
+
+    CONSTRAINT "availabilities_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "employee_availability" (
     "id" SERIAL NOT NULL,
     "employee_id" INTEGER NOT NULL,
@@ -79,19 +78,19 @@ CREATE TABLE "employee_availability" (
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "availabilities_scheduleId_key" ON "availabilities"("scheduleId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "employee_availability_employee_id_availability_id_key" ON "employee_availability"("employee_id", "availability_id");
-
--- AddForeignKey
-ALTER TABLE "availabilities" ADD CONSTRAINT "availabilities_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "schedules"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "availabilities" ADD CONSTRAINT "availabilities_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_schedules" ADD CONSTRAINT "user_schedules_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_schedules" ADD CONSTRAINT "user_schedules_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "schedules"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "availabilities" ADD CONSTRAINT "availabilities_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "schedules"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "employee_availability" ADD CONSTRAINT "employee_availability_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

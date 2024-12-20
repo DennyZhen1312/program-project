@@ -4,10 +4,11 @@ import Logo from "./marugame-udon-logo"; // Import the SVG component
 import { Notification } from "./notification";
 
 const LINKS = [
+  { href: "/availabilities", text: "AVAILABILITIES" },
   { href: "/schedules", text: "SCHEDULES" },
   { href: "/stations", text: "STATIONS" },
   { href: "/employees", text: "EMPLOYEES" },
-  { href: "/shifts", text: "SHIFTS" },
+  { href: "/shifts", text: "SHIFTS" }
 ];
 
 export default function Navbar() {

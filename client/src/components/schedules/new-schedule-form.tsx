@@ -6,13 +6,15 @@ import { FormEvent, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "./date-range-picker";
 
+const DEFAULT_DATE = {
+  from: moment().weekday(7).toDate(),
+  to: moment()
+    .weekday(7 + 7)
+    .toDate()
+};
+
 export default function NewScheduleForm() {
-  const [date, setDate] = useState<DateRange>({
-    from: moment().weekday(7).toDate(),
-    to: moment()
-      .weekday(7 + 7)
-      .toDate()
-  });
+  const [date, setDate] = useState<DateRange>(DEFAULT_DATE);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

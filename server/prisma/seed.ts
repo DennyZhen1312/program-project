@@ -9,6 +9,7 @@ async function main() {
 
   const users = await prisma.employee.createMany({
     data: clerkUsers.data.map((user) => ({
+      clerkId: user.id,
       name: user.fullName || "",
       email: user.primaryEmailAddress?.emailAddress || "",
       isAvailabilityRequested: false
@@ -40,33 +41,26 @@ async function main() {
 
   console.log(`${stations.count} station data created successfully!`);
 
-  const startTime = moment(new Date()).weekday(2).toDate();
-  const endTime = moment(startTime).add(2, "hour").toDate();
+  const startDate = moment().weekday(0).hour(9).toDate();
+  const endDate = moment()
+    .weekday(0 + 7)
+    .hour(24)
+    .toDate();
 
   const schedule = await prisma.schedule.create({
-    data: {
-      startDate: moment().weekday(0).toDate(),
-      endDate: moment()
-        .weekday(0 + 7)
-        .toDate(),
-      userSchedules: {
-        createMany: {
-          data: [
-            {
-              employeeId: 1,
-              startTime,
-              endTime
-            }
-          ]
-        }
-      }
-    },
-    include: {
-      userSchedules: true
-    }
+    data: { startDate, endDate }
   });
 
   console.log(JSON.stringify(schedule));
+
+  const availability = await prisma.availability.create({
+    data: { startDate, endDate, scheduleId: schedule.id }
+  });
+
+  console.log(availability);
+
+  // const startTime = moment(new Date()).weekday(2).toDate();
+  // const endTime = moment(startTime).add(2, "hour").toDate();
 }
 main()
   .catch((e) => {

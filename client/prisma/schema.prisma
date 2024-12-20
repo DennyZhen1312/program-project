@@ -8,13 +8,14 @@ datasource db {
 }
 
 model Employee {
-  id                        Int              @id @default(autoincrement())
+  id                        Int                     @id @default(autoincrement())
+  clerkId                   String
   name                      String
-  email                     String           @unique
-  createdAt                 DateTime         @default(now())
-  is_availability_requested Boolean          @default(false)
-  role                      Role             @default(EMPLOYEE)
-  availabilities            availabilities[]
+  email                     String                  @unique
+  createdAt                 DateTime                @default(now())
+  is_availability_requested Boolean                 @default(false)
+  role                      Role                    @default(EMPLOYEE)
+  employee_availability     employee_availability[]
   user_schedules            user_schedules[]
 }
 
@@ -34,23 +35,20 @@ model Station {
 }
 
 model availabilities {
-  id         Int      @id @default(autoincrement())
-  employeeId Int
-  monday     String?
-  tuesday    String?
-  wednesday  String?
-  thursday   String?
-  friday     String?
-  saturday   String?
-  sunday     String?
-  createdAt  DateTime @default(now())
-  Employee   Employee @relation(fields: [employeeId], references: [id])
+  id                    Int                     @id @default(autoincrement())
+  start_date            DateTime
+  end_date              DateTime
+  createdAt             DateTime                @default(now())
+  scheduleId            Int                     @unique
+  schedules             schedules               @relation(fields: [scheduleId], references: [id])
+  employee_availability employee_availability[]
 }
 
 model schedules {
   id             Int              @id @default(autoincrement())
   start_date     DateTime
   end_date       DateTime
+  availabilities availabilities?
   user_schedules user_schedules[]
 }
 
@@ -63,6 +61,16 @@ model user_schedules {
   schedules   schedules @relation(fields: [schedule_id], references: [id])
 
   @@id([employee_id, schedule_id])
+}
+
+model employee_availability {
+  employee_id     Int
+  availability_id Int
+  end_time        DateTime
+  start_time      DateTime
+  id              Int            @id @default(autoincrement())
+  availabilities  availabilities @relation(fields: [availability_id], references: [id])
+  Employee        Employee       @relation(fields: [employee_id], references: [id])
 }
 
 enum Role {

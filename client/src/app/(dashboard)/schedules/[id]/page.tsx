@@ -1,22 +1,29 @@
+import { getEmployeeAvailabilities } from "@/actions/availabilities";
+import { getEmployees } from "@/actions/employees";
 import { getSchedule } from "@/actions/schedules";
-import { DatePickerWithRange } from "@/components/schedules/date-range-picker";
+import { getShifts } from "@/actions/shfits";
 import { Scheduler } from "@/components/schedules/scheduler";
 
 type Props = {
   params: { id: string };
 };
 
-export default async function Schedule({ params }: Props) {
-  const { startDate, endDate, userSchedules } = await getSchedule(+params.id);
+export default async function Schedule({ params: { id } }: Props) {
+  const { startDate, endDate, userSchedules } = await getSchedule(+id);
+  const employeeAvailabilities = await getEmployeeAvailabilities(+id);
+  const shifts = await getShifts();
+  const employees = await getEmployees();
 
   return (
-    <div>
-      <DatePickerWithRange
-        date={{ from: startDate, to: endDate }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+    <div className="p-8">
+      <Scheduler
+        from={startDate}
+        to={endDate}
+        userSchedules={userSchedules}
+        employeeAvailabilities={employeeAvailabilities}
+        shifts={shifts}
+        employees={employees}
       />
-      <Scheduler from={startDate} to={endDate} userSchedules={userSchedules} />
     </div>
   );
 }
