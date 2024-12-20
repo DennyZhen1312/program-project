@@ -46,74 +46,18 @@ type Props = {
   formattedEndDate: any;
 };
 
-export function Scheduler({ from, to, availabilities }: Props) {
-  const [tasks, setTasks] = useState([]);
-  const { getToken } = useAuth();
-
-  // Fetch tasks from backend
-  const fetchTasks = async () => {
-    const token = await getToken();
-    try {
-      const response = await fetch("http://localhost:4000/api/scheduleTable", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
-      const formattedTasks = data.map((task: any) => ({
-        ID: task.id,
-        Name: task.name,
-        StartTime: new Date(task.startTime),
-        EndTime: new Date(task.endTime),
-        Station: task.station,
-      }));
-      setTasks(formattedTasks);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
-
-  // Handle Gantt actions
-  const handleActionComplete = async (args: any) => {
-    if (args.requestType === "add") {
-      const token = await getToken();
-      const task = args.data; // The task being saved
-  
-      const payload = {
-        name: task.Name,
-        startTime: task.StartTime.toISOString(),
-        endTime: task.EndTime.toISOString(),
-        station: task.Station,
-        scheduleId: 1, // Adjust based on your logic
-      };
-  
-      try {
-        const response = await fetch("http://localhost:4000/api/scheduleTable", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-  
-        if (response.ok) {
-          console.log("Task saved successfully.");
-          fetchTasks(); // Refresh tasks to get the updated data
-        } else {
-          console.error("Error saving task:", await response.text());
-        }
-      } catch (error) {
-        console.error("Error during save action:", error);
-      }
-    }
-  };
-  
-  useEffect(() => {
-    fetchTasks();
-  }, []);  return (
+export function Scheduler({
+  from,
+  to,
+  userSchedules,
+  availabilities,
+  formattedStartDate,
+  formattedEndDate,
+}: Props) {
+  return (
     <GanttComponent
       durationUnit="Hour"
       dateFormat="MM/dd/yyyy hh:mm:ss a"
-      actionComplete={handleActionComplete}
       projectStartDate={from}
       timezone="America/Los_Angeles"
       projectEndDate={to}
@@ -123,7 +67,7 @@ export function Scheduler({ from, to, availabilities }: Props) {
         topTier: { unit: "Day", format: "MMM dd, yyyy" },
         bottomTier: { unit: "Hour", format: "h:mm a" },
       }}
-      dataSource={tasks}
+      // dataSource={}
       taskFields={{
         id: "ID",
         name: "Name",
@@ -142,6 +86,22 @@ export function Scheduler({ from, to, availabilities }: Props) {
       height="450px"
     >
       <ColumnsDirective>
+        <ColumnDirective
+          field="Status"
+          headerText="Task Status"
+          width="150"
+          editType="dropdownedit" // Enable dropdown editor
+          edit={{
+            params: {
+              dataSource: [
+                { text: "Not Started", value: "Not Started" },
+                { text: "In Progress", value: "In Progress" },
+                { text: "Completed", value: "Completed" },
+              ],
+              fields: { text: "text", value: "value" },
+            },
+          }}
+        />
         <ColumnDirective
           field="Name"
           headerText="Name"
@@ -188,20 +148,19 @@ export function Scheduler({ from, to, availabilities }: Props) {
           }}
         ></ColumnDirective>
         <ColumnDirective field="ID" width="80"></ColumnDirective>
-        <ColumnDirective field='Station' width='250'></ColumnDirective>
       </ColumnsDirective>
       <AddDialogFieldsDirective>
         <AddDialogFieldDirective
           type="General"
           headerText="General"
-          fields={["ID", "Name", "StartTime", "EndTime", "Station"]}
+          fields={["ID", "Name", "StartTime", "EndTime", "Status"]}
         ></AddDialogFieldDirective>
       </AddDialogFieldsDirective>
       <EditDialogFieldsDirective>
         <EditDialogFieldDirective
           type="General"
           headerText="General"
-          fields={["ID", "Name", "StartTime", "EndTime", "Station"]}
+          fields={["ID", "Name", "StartTime", "EndTime", "Status"]}
         ></EditDialogFieldDirective>
       </EditDialogFieldsDirective>
       <Inject services={[Edit, Selection, Toolbar]} />

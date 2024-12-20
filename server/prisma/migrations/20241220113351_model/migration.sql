@@ -56,6 +56,19 @@ CREATE TABLE "schedules" (
 );
 
 -- CreateTable
+CREATE TABLE "ScheduleTable" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "startTime" TIMESTAMP(3) NOT NULL,
+    "endTime" TIMESTAMP(3) NOT NULL,
+    "station" TEXT NOT NULL,
+    "scheduleId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ScheduleTable_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "user_schedules" (
     "employee_id" INTEGER NOT NULL,
     "schedule_id" INTEGER NOT NULL,
@@ -82,6 +95,9 @@ CREATE UNIQUE INDEX "employee_availability_employee_id_availability_id_key" ON "
 
 -- AddForeignKey
 ALTER TABLE "schedules" ADD CONSTRAINT "schedules_availability_id_fkey" FOREIGN KEY ("availability_id") REFERENCES "availabilities"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ScheduleTable" ADD CONSTRAINT "ScheduleTable_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "schedules"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_schedules" ADD CONSTRAINT "user_schedules_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

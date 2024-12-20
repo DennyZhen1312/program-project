@@ -12,6 +12,7 @@ import { router as notificationRouter } from "./routes/notification.router";
 import { router as shiftRouter } from "./routes/shift.router";
 import { router as stationRouter } from "./routes/station.router";
 import { prisma } from "../prisma/client";
+import {router as scheduleTable} from "./routes/scheduleTable.router";
 
 declare global {
   namespace Express {
@@ -35,6 +36,7 @@ app.use("/api", stationRouter);
 app.use("/api", employeeRouter);
 app.use("/api", availabilityRouter);
 app.use("/api/notifications", notificationRouter);
+app.use("/api", scheduleTable);
 
 app.get("/api/employees/availability", async (req, res) => {
   try {

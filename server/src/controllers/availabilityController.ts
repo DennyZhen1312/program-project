@@ -130,3 +130,22 @@ export const getUserAvailability = async (req: Request, res: Response) => {
   try {
   } catch (error) {}
 };
+
+export const deleteAvailability = async (req: Request, res: Response) => {
+  const { id } = req.params; // ID of the availability to delete
+
+  try {
+    const deletedAvailability = await prisma.availability.delete({
+      where: { id: +id },
+    });
+
+    res.status(200).json({
+      message: "Availability deleted successfully",
+      data: deletedAvailability,
+    });
+  } catch (error) {
+    console.error("Error deleting availability:", error);
+    res.status(500).json({ error: "Failed to delete availability" });
+  }
+};
+

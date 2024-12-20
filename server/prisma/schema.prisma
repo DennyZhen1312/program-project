@@ -46,28 +46,40 @@ model Employee {
 }
 
 model Availability {
-  id         Int      @id @default(autoincrement())
-  name       String
-  startDate  DateTime @map("start_date")
-  endDate    DateTime @map("end_date")
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  createdAt DateTime @default(now())
 
-  Schedule Schedule[]
+  Schedule  Schedule[]
   employees EmployeeAvailability[]
 
   @@map("availabilities")
 }
 
 model Schedule {
-  id             Int          @id @default(autoincrement())
-  startDate      DateTime     @map("start_date")
-  endDate        DateTime     @map("end_date")
+  id             Int           @id @default(autoincrement())
+  startDate      DateTime      @map("start_date")
+  endDate        DateTime      @map("end_date")
   availabilityId Int?          @map("availability_id")
   availability   Availability? @relation(fields: [availabilityId], references: [id])
 
   userSchedules UserSchedule[]
+  ScheduleTable ScheduleTable[]
 
   @@map("schedules")
+}
+
+model ScheduleTable {
+  id         Int      @id @default(autoincrement())
+  name       String
+  startTime  DateTime
+  endTime    DateTime
+  station    String
+  scheduleId Int
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
 model UserSchedule {
