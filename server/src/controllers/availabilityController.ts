@@ -17,8 +17,8 @@ export const requestAvailabilities = async (req: Request, res: Response) => {
     const updatedUsers = await prisma.employee.updateMany({
       data: {
         isAvailabilityRequested: true
-      }
-      // where: { NOT: { role: "admin"}}
+      },
+      where: { NOT: { role: "MANAGER" } }
     });
 
     res.status(200).json({
@@ -81,7 +81,7 @@ export const postUserAvailability = async (req: Request, res: Response) => {
 
     // Find the employee with the matching email
     const employee = await prisma.employee.findFirst({
-      where: { email },
+      where: { email }
     });
 
     if (!employee) {
@@ -91,26 +91,24 @@ export const postUserAvailability = async (req: Request, res: Response) => {
 
     const { id: employeeId, name } = employee;
 
+    // TODO: create user availability
     // Create availability
-    const newAvailability = await prisma.availability.create({
-      data: {
-        employeeId,
-        name: name || "Default Availability", // Use the employee's name or fallback
-        startDate: new Date(availability.startDate),
-        endDate: new Date(availability.endDate),
-        scheduleId: availability.scheduleId,
-      },
-    });
+    // const newUserAvailability = await prisma.employeeAvailability.create({
+    //   data: {
+    //     startDate: new Date(availability.startDate),
+    //     endDate: new Date(availability.endDate)
+    //   }
+    // });
 
     // Update the employee's isAvailabilityRequested status to false
     await prisma.employee.update({
       where: { id: employeeId },
-      data: { isAvailabilityRequested: false },
+      data: { isAvailabilityRequested: false }
     });
 
     res.status(201).json({
       message: "Availability created and request status updated successfully",
-      data: newAvailability,
+      data: "rework" // newAvailability
     });
   } catch (error) {
     console.error("Error creating availability:", error);

@@ -41,31 +41,16 @@ model Employee {
   isAvailabilityRequested Boolean  @default(false) @map("is_availability_requested")
   role                    Role     @default(EMPLOYEE)
 
-  availabilities EmployeeAvailability[]
-  userSchedules  UserSchedule[]
-}
-
-model Availability {
-  id         Int      @id @default(autoincrement())
-  name       String
-  startDate  DateTime @map("start_date")
-  endDate    DateTime @map("end_date")
-  createdAt  DateTime @default(now())
-
-  Schedule Schedule[]
-  employees EmployeeAvailability[]
-
-  @@map("availabilities")
+  employeeAvailabilities EmployeeAvailability[]
+  userSchedules          UserSchedule[]
 }
 
 model Schedule {
-  id             Int          @id @default(autoincrement())
-  startDate      DateTime     @map("start_date")
-  endDate        DateTime     @map("end_date")
-  availabilityId Int          @map("availability_id")
-  availability   Availability @relation(fields: [availabilityId], references: [id])
-
+  id            Int            @id @default(autoincrement())
+  startDate     DateTime       @map("start_date")
+  endDate       DateTime       @map("end_date")
   userSchedules UserSchedule[]
+  availability  Availability?
 
   @@map("schedules")
 }
@@ -82,11 +67,22 @@ model UserSchedule {
   @@map("user_schedules")
 }
 
-model EmployeeAvailability {
-  id         Int      @id @default(autoincrement())
-  employeeId Int      @map("employee_id")
-  employee   Employee @relation(fields: [employeeId], references: [id])
+model Availability {
+  id         Int                    @id @default(autoincrement())
+  startDate  DateTime               @map("start_date")
+  endDate    DateTime               @map("end_date")
+  createdAt  DateTime               @default(now())
+  scheduleId Int                    @unique
+  schedule   Schedule               @relation(fields: [scheduleId], references: [id])
+  employees  EmployeeAvailability[]
 
+  @@map("availabilities")
+}
+
+model EmployeeAvailability {
+  id             Int          @id @default(autoincrement())
+  employeeId     Int          @map("employee_id")
+  employee       Employee     @relation(fields: [employeeId], references: [id])
   availabilityId Int          @map("availability_id")
   availability   Availability @relation(fields: [availabilityId], references: [id])
 
