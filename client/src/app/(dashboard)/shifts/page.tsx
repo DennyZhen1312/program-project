@@ -19,8 +19,8 @@ export default function Shifts() {
       try {
         const response = await fetch("http://localhost:4000/api/shifts", {
           headers: {
-            Authorization: `Bearer ${token}`, // Add Authorization header
-          },
+            Authorization: `Bearer ${token}` // Add Authorization header
+          }
         }); // Replace with your API endpoint
         if (!response.ok) {
           throw new Error("Failed to fetch shifts");
@@ -28,6 +28,7 @@ export default function Shifts() {
         const data = await response.json();
         setShifts(data);
       } catch (err) {
+        // @ts-ignore
         setError(err.message);
       } finally {
         setLoading(false);

@@ -19,8 +19,8 @@ export default function Employees() {
       try {
         const response = await fetch("http://localhost:4000/api/employees", {
           headers: {
-            Authorization: `Bearer ${token}`, // Add Authorization header
-          },
+            Authorization: `Bearer ${token}` // Add Authorization header
+          }
         });
         if (!response.ok) {
           throw new Error("Failed to fetch employees");
@@ -28,6 +28,7 @@ export default function Employees() {
         const data = await response.json();
         setEmployees(data);
       } catch (err) {
+        // @ts-ignore
         setError(err.message);
       } finally {
         setLoading(false);

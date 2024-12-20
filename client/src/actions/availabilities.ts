@@ -15,11 +15,14 @@ export const getAvailabilities = async (): Promise<Availability[]> => {
 
 export const getEmployeeAvailabilities = async (
   id: number
-): Promise<EmployeeAvailability[]> => {
+): Promise<(EmployeeAvailability & { employee: Employee })[]> => {
   const employee = await getCurrentEmployee();
 
   return prisma.employeeAvailability.findMany({
-    where: { AND: [{ availabilityId: id }, { employeeId: employee?.id }] }
+    where: { AND: [{ availabilityId: id }, { employeeId: employee?.id }] },
+    include: {
+      employee: true
+    }
   });
 };
 

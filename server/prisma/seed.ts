@@ -41,9 +41,10 @@ async function main() {
 
   console.log(`${stations.count} station data created successfully!`);
 
-  const startDate = moment().weekday(0).toDate();
+  const startDate = moment().weekday(0).hour(9).toDate();
   const endDate = moment()
     .weekday(0 + 7)
+    .hour(24)
     .toDate();
 
   const schedule = await prisma.schedule.create({

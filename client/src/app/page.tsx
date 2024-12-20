@@ -1,10 +1,9 @@
 "use client";
 
+import { SignedOut, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { SignedOut, useAuth } from "@clerk/nextjs";
 import SignInPage from "./sign-in/[[...sign-in]]/page";
-
 
 export default function Home() {
   const router = useRouter();
@@ -12,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isSignedIn) {
-      router.push("/stations");
+      router.push("/schedules");
     }
   }, [isSignedIn, router]);
 

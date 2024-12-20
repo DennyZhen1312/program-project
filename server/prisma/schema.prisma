@@ -57,6 +57,7 @@ model Schedule {
 }
 
 model UserSchedule {
+  id         Int      @id @default(autoincrement())
   employeeId Int      @map("employee_id")
   employee   Employee @relation(fields: [employeeId], references: [id])
   scheduleId Int      @map("schedule_id")
@@ -64,7 +65,6 @@ model UserSchedule {
   startTime  DateTime @map("start_time") @db.Timestamp(3)
   endTime    DateTime @map("end_time") @db.Timestamp(3)
 
-  @@id([employeeId, scheduleId])
   @@map("user_schedules")
 }
 
