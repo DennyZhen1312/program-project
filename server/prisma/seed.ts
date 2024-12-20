@@ -9,6 +9,7 @@ async function main() {
 
   const users = await prisma.employee.createMany({
     data: clerkUsers.data.map((user) => ({
+      clerkId: user.id,
       name: user.fullName || "",
       email: user.primaryEmailAddress?.emailAddress || "",
       isAvailabilityRequested: false

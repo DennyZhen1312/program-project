@@ -25,6 +25,7 @@ CREATE TABLE "Station" (
 -- CreateTable
 CREATE TABLE "Employee" (
     "id" SERIAL NOT NULL,
+    "clerkId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

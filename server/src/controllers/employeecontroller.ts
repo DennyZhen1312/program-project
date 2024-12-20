@@ -20,9 +20,10 @@ export const createEmployee = async (req: Request, res: Response) => {
       res.status(400).json({ error: "Name and email are required" });
       return;
     }
+    const clerkId = req.auth.userId;
 
     const newEmployee = await prisma.employee.create({
-      data: { name, email }
+      data: { name, email, clerkId: clerkId! }
     });
 
     res.status(201).json(newEmployee);
