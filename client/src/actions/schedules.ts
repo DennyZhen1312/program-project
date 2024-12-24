@@ -29,7 +29,13 @@ export const createSchedule = async (date: DateRange) => {
   const schedule = await prisma.schedule.create({
     data: {
       startDate: date.from!,
-      endDate: date.to!
+      endDate: date.to!,
+      availability: {
+        create: {
+          startDate: date.from!,
+          endDate: date.to!
+        }
+      }
     }
   });
 
@@ -37,7 +43,11 @@ export const createSchedule = async (date: DateRange) => {
 };
 
 export const getSchedules = async () => {
-  const schedules = await prisma.schedule.findMany();
+  const schedules = await prisma.schedule.findMany({
+    orderBy: {
+      id: "desc"
+    }
+  });
 
   return schedules;
 };

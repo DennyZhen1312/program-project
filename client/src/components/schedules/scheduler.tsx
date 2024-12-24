@@ -14,7 +14,12 @@ import {
   Toolbar
 } from "@syncfusion/ej2-react-gantt";
 
-import { Employee, UserSchedule } from "@prisma/client";
+import {
+  Employee,
+  EmployeeAvailability,
+  Shift,
+  UserSchedule
+} from "@prisma/client";
 import { registerLicense } from "@syncfusion/ej2-base";
 import "@syncfusion/ej2-base/styles/material.css";
 import "@syncfusion/ej2-buttons/styles/material.css";
@@ -39,9 +44,19 @@ type Props = {
   to: Date;
   from: Date;
   userSchedules: (UserSchedule & { employee: Employee })[];
+  employeeAvailabilities: (EmployeeAvailability & { employee: Employee })[];
+  shifts: Shift[];
+  employees: Employee[];
 };
 
-export function Scheduler({ from, to, userSchedules }: Props) {
+export function Scheduler({
+  from,
+  to,
+  userSchedules,
+  employeeAvailabilities,
+  employees,
+  shifts
+}: Props) {
   return (
     <GanttComponent
       durationUnit="Hour"
@@ -49,23 +64,20 @@ export function Scheduler({ from, to, userSchedules }: Props) {
       projectStartDate={from}
       timezone="America/Los_Angeles"
       projectEndDate={to}
-      dayWorkingTime={[{ from: 0, to: 24 }]}
+      dayWorkingTime={[{ from: 9, to: 24 }]}
       timelineSettings={{
-        timelineUnitSize: 60,
+        timelineUnitSize: 75,
         topTier: { unit: "Day", format: "MMM dd, yyyy" },
         bottomTier: { unit: "Hour", format: "h:mm a" }
       }}
       dataSource={userSchedules.map(
-        ({ employee: { id, name }, startTime, endTime }) => ({
+        ({ employee: { name }, startTime, endTime, id }) => ({
           ID: id,
-          Name: name,
+          Employee: name,
           StartTime: startTime,
           EndTime: endTime
         })
       )}
-      actionComplete={(args) => {
-        console.log(args);
-      }}
       taskFields={{
         id: "ID",
         name: "Name",
@@ -84,46 +96,44 @@ export function Scheduler({ from, to, userSchedules }: Props) {
       height="450px"
     >
       <ColumnsDirective>
-        {/* <ColumnDirective
-          field="Status"
-          headerText="Task Status"
+        <ColumnDirective field="ID"></ColumnDirective>
+
+        <ColumnDirective
+          field="Employee"
+          headerText="Employee"
           width="150"
           editType="dropdownedit" // Enable dropdown editor
           edit={{
             params: {
-              dataSource: [
-                { text: "Not Started", value: "Not Started" },
-                { text: "In Progress", value: "In Progress" },
-                { text: "Completed", value: "Completed" }
-              ],
+              dataSource: employees.map(({ id, name }) => ({
+                text: name,
+                value: name
+              })),
               fields: { text: "text", value: "value" }
             }
           }}
-        /> */}
-        <ColumnDirective field="ID" width="80"></ColumnDirective>
-        <ColumnDirective
-          field="Name"
-          headerText="Name"
-          width="250"
-          clipMode="EllipsisWithTooltip"
-        ></ColumnDirective>
+        />
+
         <ColumnDirective field="StartTime"></ColumnDirective>
+
         <ColumnDirective field="EndTime"></ColumnDirective>
       </ColumnsDirective>
+
       <AddDialogFieldsDirective>
         <AddDialogFieldDirective
           type="General"
           headerText="General"
-          fields={["ID", "Name", "StartTime", "EndTime", "Status"]}
+          fields={["Employee", "StartTime", "EndTime"]}
         ></AddDialogFieldDirective>
       </AddDialogFieldsDirective>
       <EditDialogFieldsDirective>
         <EditDialogFieldDirective
           type="General"
           headerText="General"
-          fields={["ID", "Name", "StartTime", "EndTime", "Status"]}
+          fields={["Employee", "StartTime", "EndTime"]}
         ></EditDialogFieldDirective>
       </EditDialogFieldsDirective>
+
       <Inject services={[Edit, Selection, Toolbar]} />
     </GanttComponent>
   );

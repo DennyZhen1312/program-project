@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
 import { StationType } from "@/types/types";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function UpdateStation() {
   const [station, setStation] = useState<StationType>({
     name: "",
-    description: "",
+    description: ""
   } as StationType);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -37,7 +37,7 @@ export default function UpdateStation() {
     const { name, value } = e.target;
     setStation((prevStation) => ({
       ...prevStation,
-      [name]: value,
+      [name]: value
     }));
   };
 
@@ -56,7 +56,7 @@ export default function UpdateStation() {
       const response = await fetch(`http://localhost:4000/api/stations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(station),
+        body: JSON.stringify(station)
       });
 
       if (response.ok) {
@@ -76,7 +76,7 @@ export default function UpdateStation() {
   const handleDeleteStation = async () => {
     try {
       const response = await fetch(`http://localhost:4000/api/stations/${id}`, {
-        method: "DELETE",
+        method: "DELETE"
       });
 
       if (response.ok) {
